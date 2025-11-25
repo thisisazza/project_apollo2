@@ -1,0 +1,26 @@
+"THE 4 AGENTS"
+Vi bygger ikke en monolitt. Vi bygger fire samhandlende mikrotjenester/moduler:
+
+Engagement Agent (The 'Why'):
+
+Ansvar: XP, Streaks, Leaderboards, "Kudos"-systemet.
+
+Logikk: Duolingo-style retention loops.
+
+Content Agent (The 'What'):
+
+Ansvar: Øvelsesbibliotek, MediaPipe/YOLOv8 logikk, vinkelberegninger for "Correctness".
+
+UI: Skjelett-visning (må kunne toggles av/på eller endres visuelt).
+
+Economy Agent (The 'How'):
+
+Ansvar: In-App Purchases (RevenueCat), virtuell valuta (Coins/Gems), Entitlements (tilgangskontroll).
+
+Regel: Enkelt kjøp, men robust backend-validering.
+
+Dopamine Agent (The 'Feel'):
+
+Ansvar: Visuell "Juice". Shaders, partikkeleffekter, haptics, lydeffekter ved suksess.
+
+Design: Skal føles som et spill, ikke et regneark.

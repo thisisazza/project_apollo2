@@ -1,0 +1,380 @@
+
+An Architectural Blueprint for AI-Native Development and Motion Tracking
+
+This report outlines a complete structure for "vibecoding"—a modern, AI-augmented development practice. It defines a concrete project vision, establishes a 2025-ready toolchain, provides a deep analysis of open-source motion tracking alternatives, and concludes with a practical guide to crafting effective prompts for this new workflow.
+
+Section 1.1: From Idea to AI MVP: A 2025 Playbook
+
+Deconstructing the "Vibecoding" Philosophy
+The concept of "vibecoding" is an evolution of established agile methodologies, specifically the "Lean Startup" framework of Build-Measure-Learn.1 It represents a new development paradigm where the "Build" phase is compressed by an order of magnitude through the use of generative AI tools. The "vibe" refers to the intuition, high-level product vision, and rapid ideation; the "coding" is the execution, which is now a collaborative effort between the developer and a suite of AI partners.
+This transforms the traditional product cycle. The old model was "Build -> Measure -> Learn." The new, AI-native model is "Ideate (with AI) -> Generate (with AI) -> Test (with users) -> Refine (with AI)." This accelerated loop allows teams to test hypotheses and validate product-market fit at an unprecedented speed.1
+Defining the Project Vision: A "Smart Mat" Case Study
+To ground this report in a practical application, a concrete project vision is assumed: a "Smart Mat" mobile application for AI-powered yoga, fitness, or physical therapy. This "phy-gital" (physical-digital) product addresses a core user problem identified in sports analytics: athletes and fitness enthusiasts often do not know how to correct their form, even when they know it is wrong.2 The product's success, therefore, hinges entirely on the quality, accuracy, and latency of its real-time motion-tracking feedback loop.
+Strategic Validation: The AI-Native MVP
+An AI Minimum Viable Product (MVP) is not a mere prototype; it is "a functional tool powered by artificial intelligence that solves one real user problem".3 For founders and product teams, speed to validation is critical for success.3
+In the context of the "Smart Mat" app, the single riskiest assumption is not "Can we build user profiles and a subscription plan?" The core risks are: "Is the real-time AI feedback accurate enough for users to trust it?" 2 and "Is the feedback delivered with low enough latency to be useful, or is it just an annoying gimmick?".4
+A traditional "fake" demo, like Dropbox's original MVP video 1, is insufficient for this product. The AI-driven feedback loop is the product. Therefore, the entire goal of the MVP is to de-risk this AI core. This strategic requirement dictates the entire technical architecture detailed in this report, prioritizing the on-mat experience over all ancillary features.
+
+Section 1.2: The AI-First Development "Practise": A 2025 Toolchain
+
+A modern "vibecoding" practise requires a new, AI-first toolchain. This stack is divided into two parts: the Prototyping (UI/UX) stack and the Development (IDE) stack.
+The Prototyping Stack (UI/UX): Inspiration vs. Implementation
+The 2025 workflow leverages two distinct types of generative UI tools in sequence.
+Stage 1: Visual Ideation (Midjourney): Tools like Midjourney are used for inspiration, not final implementation.5 They excel at accelerating the ideation process by generating visual assets like mood boards, app screen concepts, color palettes, and icon styles.6 The goal at this stage is to answer the "vibe" question: "What should this product feel like?"
+Stage 2: Component Generation (v0.dev): Tools like Vercel's v0.dev are for implementation.9 This generative UI tool translates natural language prompts into high-quality, production-ready code.10 It generates React components using modern standards like Tailwind CSS and shadcn/ui, which can be directly copied into a project.9
+The optimal "vibecoding" UI workflow chains these tools. A developer first uses Midjourney to generate a visual concept (e.g., "a minimalist fitness dashboard with neon accents"). Then, they describe that visual concept in a text prompt to v0.dev to generate the functional React component code. This bridges the gap between static image generation (Midjourney) and code generation (Copilot), effectively solving the traditional design-to-development handoff.13 While the "Smart Mat" mobile app will use a different stack (Flutter), this workflow is essential for rapidly building the project's marketing website or an admin dashboard.11
+Table 1: Generative UI Toolchain Analysis
+
+Tool
+Output
+Primary Use Case
+Tech Stack
+Key Finding
+Midjourney
+Image (JPG/PNG)
+Visual Ideation, Mood Boards, Inspiration
+N/A
+"Helps you get ideas... not create the final design".5
+v0.dev
+React/Tailwind/shadcn Code
+Rapid Prototyping, Component Generation
+React
+"Generates a fully functional and editable code".9
+MagicPatterns
+React Code
+Component Generation (Design System-Aware)
+React
+"Consistent with existing design systems".14
+
+The Development Environment: Assistant vs. AI-Native IDE
+The choice of coding environment is a fundamental workflow decision, centered on the distinction between an AI assistant and a true AI-native IDE.
+GitHub Copilot (The Ubiquitous Assistant): Copilot is now far more than simple autocomplete.15 With features like Copilot Edits and Copilot Workspace, it functions as an agent for modifications and refactoring directly within VS Code.15 Its primary strength lies in micro-tasks: "quick edits," generating self-contained functions, and fixing localized bugs.15
+Antigravity IDE (The AI-Native Environment): The distinction is critical. Copilot acts as a pair programmer you give small, explicit tasks. Cursor, by contrast, is an architectural partner that can be "trained" on the codebase.17 For "vibecoding" a complex new AI application from scratch, the architecture is fluid. The ability to perform intelligent, context-aware refactoring across the entire project is exponentially more valuable than simple inline completion. While academic studies note minor setup hurdles with Cursor 18, this is a trivial one-time cost for the significant productivity gain of a fully context-aware IDE. The recommendation is to use Cursor IDE.
+Table 2: AI-Powered IDEs (2025-2026) Comparison
+Tool
+Core Paradigm
+Best For (Task Type)
+Reasoning Power
+Project-wide Context
+GitHub Copilot
+AI Assistant (in VS Code)
+Micro-Tasks (Autocomplete, inline edits)
+Medium
+Low (File-level)
+Cursor IDE
+AI-Native IDE
+Macro-Tasks (Refactoring, codebase Q&A)
+High
+High (Project-wide)
+Claude Code (in IDE)
+Reasoning Engine
+Macro-Tasks (Complex logic, deep reasoning)
+Very High
+High
+
+15
+
+Part 2: The Core Technical Challenge: Architecting the Motion Tracking Subsystem
+
+This section provides an exhaustive analysis of the open-source alternatives for motion tracking, addressing the project's core technical challenge.
+
+Section 2.1: The Foundational Decision: On-Device vs. Server-Side Inference
+
+The most critical architectural decision for the "Smart Mat" app is where to run the AI model. This is a direct trade-off between competing product needs.
+The On-Device Path (Edge Processing): This involves running the model directly on the user's mobile phone.
+Pros: Extremely low latency (instant feedback), superior privacy (video data never leaves the device), and offline functionality.
+Cons: Limited by the phone's CPU/NPU, leading to high battery drain and restrictions on model size and complexity.20 On-device models also typically struggle with multi-person tracking.21
+The Server-Side Path (Cloud Processing): This involves streaming the user's video to a server for processing.
+Pros: Access to high-performance GPUs 22, enabling the use of larger, more accurate, and multi-person models.24
+Cons: This path is plagued by latency, a known "killer" for real-time feedback apps.4 It also introduces server costs and significant data privacy concerns.
+The "Smart Mat" use case sits at the worst possible intersection of these trade-offs. It requires the near-zero latency of on-device processing but desires the high-accuracy, multi-keypoint analysis of server-side models.2 This conflict must be solved architecturally.
+
+Section 2.2: Contender 1: Google MediaPipe (The On-Device Champion)
+
+Architecture: MediaPipe is a "plug-and-play powerhouse" 20 and a "lightweight, cross-platform framework" from Google designed for mobile-first AI.27 It uses the BlazePose model, which is specifically "designed for mobile devices".28
+Topology: This is MediaPipe's single most important feature for this use case. Where most pose models use the 17-keypoint COCO topology, MediaPipe Pose detects 33 distinct keypoints.26 This is not just a quantitative difference; it is qualitative. The standard COCO topology "only localize[s] to the ankle and wrist points, lacking scale and orientation information for hands and feet".26 For a yoga or fitness app, this is a deal-breaker. Correct form analysis demands knowing the orientation of the hands and feet. MediaPipe's 33-keypoint topology was explicitly "designed for fitness and dance use-cases" to solve this exact problem.26 Its "detailed facial and hand landmarks... provides a much richer feature set" than its competitors.32
+Performance: MediaPipe achieves "real-time performance on mobile phones with CPU inference".26 Benchmarks confirm this, showing "moderate (10 to 40 fps depending on the device)" 30 and a "minimum 25 fps on older Android devices".30 It is "Optimized for live data (camera, mic)".20
+Limitations: Its core design is "limited to single-person pose estimation" 21 and "may struggle with multiple people".22
+
+Section 2.3: Contender 2: OpenPose (The Accuracy Benchmark)
+
+Architecture: OpenPose is the classic, foundational framework for pose estimation.33 It is famous for its "bottom-up" approach using Part Affinity Fields (PAFs) to achieve high-accuracy, "real-time multi-person" detection (in total 135 keypoints per person) on high-end hardware.35
+Performance (The Deal-Breaker): OpenPose is not a mobile-first solution. It "requires high-end GPUs" for its famed performance.22 On a CPU-only environment (like a mobile phone), the performance is catastrophic. The CPU version runs at "about 0.1 FPS (i.e., about 15 sec / frame)".39 This makes it completely unusable for a real-time application. While "Lightweight OpenPose" variants exist for edge devices 40, they suffer from "lower... accuracy" 27 and are still outperformed in mobile efficiency by MediaPipe and modern YOLO models.42
+Verdict: OpenPose is a red herring for this project. It is a foundational technology but is not a practical choice for a "vibecoding" MVP in 2025 due to its extreme computational cost on non-GPU hardware.39
+
+Section 2.4: Contender 3: YOLO-Pose (The End-to-End Challenger)
+
+Architecture: This is a modern, "end-to-end" 43 and "heatmap-free" 44 approach based on the "proven architecture" of the YOLO object detection family.23 It unifies object detection, pose estimation, and tracking into a single, efficient model that runs in one forward pass.44
+Performance: YOLO-Pose is designed for speed and accuracy on modern hardware, especially GPUs.23 Its architecture is highly scalable, with "nano" and "small" variants (e.g., YOLOv8n-pose) offering "real-time performance" that balances speed and computational cost.23
+Key Advantage (vs. MediaPipe): It is inherently multi-person.21 Because it is an object detector first, it excels at "distinguishing between individuals in crowded scenes" 43 and has robust, built-in tracking capabilities.45
+Key Disadvantage (vs. MediaPipe): It uses the standard 17-keypoint COCO topology.23 This means it lacks the rich hand, foot, and face data that MediaPipe's 33-point topology provides.26
+
+Section 2.5: The Verdict: A Hybrid Architecture Recommendation
+
+The analysis reveals a clear contradiction. MediaPipe has the superior topology for fitness analysis 26 and the best on-device performance.20 YOLO-Pose has the superior server-side, multi-person performance.23 A world-class "Smart Mat" app must use both to resolve the latency-versus-accuracy conflict.
+Relying only on a server-side YOLO model will fail the product due to user-perceived network latency.4 Relying only on an on-device MediaPipe model will succeed for an MVP 49 but will lack the deep analytical power of a server model and will fail to scale to multi-person "class" scenarios.24
+Therefore, the optimal architecture is a Hybrid "Vibecode" Solution:
+(Real-Time Feedback): The mobile app runs MediaPipe Pose (BlazePose) on-device.26 This provides an instant, low-fidelity skeleton for the UI. The user gets immediate feedback (e.g., "Are you on the mat?").
+Real-Time (On-Device): Google MediaPipe Pose (BlazePose 33-point topology). Must track feet/hips in <15ms. Used for immediate feedback (rep counting, "hit the zone").
+Deep Analysis (Async/Server): YOLOv8 / SAM 3. Video is uploaded post-drill for "Pro Analysis" (heatmap, precise error correction).
+
+This hybrid approach gives the user the feeling of real-time performance (from MediaPipe) while capturing the data for high-accuracy insights (from YOLO-Pose).
+Table 3: 2025 Mobile Pose Estimation Model Benchmarks
+
+Model
+Keypoints (Topology)
+Ideal Deployment
+Performance (Mobile CPU)
+Performance (Server GPU)
+Multi-Person
+MediaPipe Pose
+33 (BlazePose)
+On-Device
+Real-Time (25-40+ FPS) 30
+N/A
+No 21
+OpenPose (Default)
+25 (BODY_25)
+Server
+Unusable (~0.1 FPS) 39
+Real-Time
+Yes 36
+YOLOv8-Pose (n/s)
+17 (COCO)
+Server
+Slow
+Real-Time 23
+Yes 43
+
+
+
+
+User note: Can we integrate metas SAM3? 
+Part 3: The Full-Stack Implementation Blueprint
+
+This section translates the hybrid architectural decision into a concrete, end-to-end technology stack.
+
+Section 3.1: Backend: High-Performance AI Serving with FastAPI
+
+Why FastAPI: FastAPI is the non-negotiable choice for a Python-based AI backend in 2025.
+Performance: It provides "Enterprise-ready speed" 51 built on Python's asyncio framework.52 This allows it to handle "thousands of concurrent requests," making it "ideal for real-time applications".51
+Developer Experience: It features auto-generated interactive API documentation (via OpenAPI and Swagger UI) 51 and leverages Pydantic type hints for automatic request validation, which drastically reduces boilerplate code.51
+AI Ecosystem: It is the industry standard for serving ML models, used by teams at Microsoft, Uber, Netflix, and Explosion AI (creators of spaCy).53
+Implementation: The /analyze-pose Endpoint
+The FastAPI server will be responsible for serving the YOLO-Pose model.50 A "production-grade" 51 implementation must avoid naive approaches like loading the model as a global variable.55 Instead, it should use FastAPI's powerful Dependency Injection system.56
+A ModelLoader class will load the YOLO('yolov8n-pose.pt') model 43 once on application startup (e.g., via a lifespan event). This model instance is then "injected" 56 into the API endpoints as a dependency. This ensures the large model is a shared singleton, minimizing memory footprint and eliminating load times on a per-request basis. This pattern aligns with "Clean Architecture" principles.58
+Real-Time Video Processing: WebRTC and WebSockets
+The mobile client will stream video to this backend. As identified in 4, this is a common bottleneck. A naive architecture that attempts to send a processed video stream back to the client via WebRTC will fail due to latency.4
+The optimal, asynchronous architecture is as follows:
+The mobile client streams video to the server using WebRTC.
+The FastAPI server receives the video frame, runs the YOLO-Pose model 55 to extract keypoints, and generates a simple JSON object of those keypoints.
+The server pushes only the JSON keypoint data back to the client via a WebSocket.
+The Flutter client is responsible for re-drawing the skeleton overlay on its local camera feed using this data.
+This separates processing from rendering, minimizes network payloads, and solves the user-perceived latency problem.4
+
+Section 3.2: Mobile Frontend: Flutter vs. React Native
+
+The 2025 Decision
+For our "phy-gital" use case, the choice of cross-platform framework is critical.
+React Native (RN): Leverages the vast JavaScript/TypeScript ecosystem 59 and large talent pool.61 It is ideal for apps that need deep "integration with React web app[s]".62 Its core principle is using native OS components (lists, buttons, etc.), making it excellent for apps that need to "closely match native platform elements".62
+Flutter: Uses the Dart language 59 and, crucially, employs a single custom rendering engine (Skia).62 This allows for "pixel-perfect" UI consistency across all platforms 61 and provides "near-native" performance through Ahead-of-Time (AOT) compilation.65
+The decisive factor is the app's primary function. A "Smart Mat" app is a "complex animation" problem.62 It must render a custom skeleton, animate transitions, and overlay data on a live video feed. It is not a forms-based data-entry app. As noted in 63, "Flutter is basically a game engine masquerading as an app development framework." This "game engine" paradigm is exactly what this use case requires. We are building a real-time, interactive visual "game," not a simple list view.
+Recommendation: Flutter.
+Custom UI Rendering: Flutter's custom rendering engine is built for the skeleton overlays and custom animations this app requires.62
+Performance: Its AOT-compiled, near-native performance is better suited for graphics-intensive, real-time rendering.61
+Google Ecosystem: Flutter is a Google product, and our on-device model, MediaPipe, is also a Google product.66 This ensures "nice integration" 62 and reliable, first-party plugin support.61 This "Flutter + Firebase for the MVP" stack is a validated, clean, long-term bet.49
+Table 4: 2025 Mobile Framework Showdown: Flutter vs. React Native for AI Applications
+
+Criterion
+Flutter
+React Native
+Verdict for "Smart Mat"
+UI Rendering
+Custom "Game Engine" 63
+Native OS Components 62
+Flutter
+Performance
+Near-Native (AOT Compilation) 62
+Good (JS Bridge) 61
+Flutter
+AI/CV Integration
+Excellent (Google MediaPipe) 49
+Good (Community Plugins) 61
+Flutter
+Dev Ecosystem
+Growing 61
+Mature/Larger 59
+React Native
+Custom Animations
+Excels 62
+Requires Native Code 62
+Flutter
+
+
+Section 3.3: Connecting the Stack: Client-Server Data Flow
+
+The final hybrid architecture connects all recommended components:
+Client (Flutter): The user opens the app.
+The camera package displays the live video feed in the UI.
+A local MediaPipe (BlazePose) instance processes the video stream on-device. Its 33 keypoints are used to draw the real-time skeleton overlay. This is Path 1, providing instant feedback.
+Simultaneously, the flutter_webrtc package begins streaming the video to the backend server. This is Path 2.
+Server (FastAPI):
+The WebRTC endpoint receives the raw video stream.
+The stream is passed to the /analyze-pose/ endpoint, which uses the injected YOLOv8-Pose model singleton to perform high-fidelity, multi-person pose estimation.
+Data Return (WebSocket):
+The FastAPI server does not send video back. It broadcasts a JSON payload (e.g., {"user_id": "...", "frame": 123, "poses": [...]}) via a WebSocket channel.49
+The Flutter client's web_socket_channel listens for this JSON data. It uses this high-fidelity data to update a separate data model, which will populate the user's "post-pose summary" or "form report."
+This architecture, informed by 49, and 4, successfully resolves the core product dilemma. The user sees the instant, low-latency skeleton from MediaPipe, while the app builds a rich, high-accuracy analysis in the background using the server-side YOLO model.
+
+Part 4: "Vibecoding": A Practical Prompt Engineering Guide (instructions.md)
+
+This final section provides a "cookbook" of effective prompts for the recommended AI-native toolchain, enabling rapid development and "vibecoding."
+
+Section 4.1: Prompting for System Architecture (Cursor + Claude-3 Opus Model)
+
+Goal: Use the AI as an expert-level "sparring partner" to validate high-level architectural decisions, forcing it to use "deep reasoning".15
+Strategy: Do not ask what to do. Present two well-reasoned options and ask the AI to debate them, citing specific trade-offs.
+Example Prompt:
+
+
+
+Act as a principal AI architect specializing in "phy-gital" applications. I am building a "Smart Mat" yoga app. The core technical problem is real-time pose estimation.
+
+I am deciding between two architectures:
+1.  **On-Device Only:** Using Google's MediaPipe Pose (BlazePose)  on the mobile client (Flutter).
+2.  **Server-Side Only:** Streaming video via WebRTC  to a FastAPI backend  running YOLOv8-Pose.
+
+Debate the pros and cons of each. Focus your analysis on the following four criteria:
+1.  User-perceived latency 
+2.  Accuracy of form correction 
+3.  Richness of the keypoint topology (MediaPipe's 33 points vs. COCO's 17) [26, 48]
+4.  Scalability to multi-person scenarios [24]
+
+Conclude with a recommendation for a sub-20ms feedback loop MVP.
+
+
+
+Section 4.2: Prompting for Code Generation (Cursor + FastAPI Backend)
+
+Goal: Generate boilerplate, production-ready backend code.
+Strategy: Be hyper-specific. Name the files, functions, required libraries, and data models (Pydantic/JSON). This guides the AI to produce exact, copy-paste-ready code.
+Example Prompt:
+
+
+
+Using `fastapi` , `uvicorn`, and `ultralytics` , write a complete Python file `main.py`.
+
+The file must do the following:
+1.  Import `YOLO` from `ultralytics`.
+2.  Define a Pydantic model `Keypoint` (with fields `x: float`, `y: float`, `confidence: float | None`).
+3.  Define a Pydantic response model `PoseResponse` (with a field `keypoints: List[Keypoint]`).
+4.  Create a `contextlib.asynccontextmanager` function named `lifespan` to manage the AI model.
+5.  Inside the `lifespan` manager, load the `YOLO('yolov8n-pose.pt')` model into the `app.state.model` variable.
+6.  Pass this `lifespan` manager to the `FastAPI` app instance.
+7.  Create an `async def` endpoint `@app.post("/analyze-pose/")`  that accepts an `UploadFile`.
+8.  Read the file's bytes, convert it to an OpenCV image (`cv2`), and run the `app.state.model.predict()` method on it.
+9.  Extract the 17 keypoints from the model's results.
+10. Convert the keypoint data into the `PoseResponse` Pydantic model and return it as JSON.
+
+
+
+Section 4.3: Prompting for UI Generation (v0.dev & Cursor for Flutter)
+
+Goal: Rapidly prototype the UI and generate Flutter component code.
+Strategy (v0.dev): Use descriptive, "vibe"-oriented language. Focus on layout, components, and theme, specifying the required stack.9
+Example v0.dev Prompt:
+
+
+
+Create a responsive dashboard UI for a fitness app using React, shadcn/ui, and Tailwind CSS.
+It must have a dark-mode theme.
+The layout should be a 2/3 main panel and a 1/3 sidebar.
+The main panel must contain a large, prominent video player component.
+The right sidebar must contain two cards:
+1.  A "Real-Time Feedback" card with a list of corrections (e.g., "Align Shoulders," "Straighten Back").
+2.  A "Workout Stats" card  with metrics like "Poses Held," "Accuracy," and "Time."
+
+
+Strategy (Cursor for Flutter): Use Flutter-specific, technical terminology (Widgets, State, Packages). Reference the exact data structures the component will receive.
+Example Cursor Prompt (for Flutter):
+
+
+
+Generate a Flutter  `StatefulWidget` named `PoseCameraView`.
+1.  It must use the `camera` package to display a live camera preview.
+2.  It must accept an argument: `List<PoseLandmark> landmarks` (this is the data type from MediaPipe ).
+3.  Use a `Stack` widget to overlay a `CustomPaint` on top of the `CameraPreview`.
+4.  Create a `PosePainter` class that extends `CustomPainter`.
+5.  This painter must loop through the `landmarks` list and draw a `Circle` at each landmark's (x, y) position.
+6.  It must also draw lines connecting the main joints (e.g., LeftShoulder to LeftElbow, LeftElbow to LeftWrist, etc.) to form a complete skeleton.
+
+
+Citerade verk
+[GUIDE] Build an MVP Fast in 2025 — Traditional vs. AI-Powered No-Code Tools - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/Startup_Ideas/comments/1k54od8/guide_build_an_mvp_fast_in_2025_traditional_vs/
+Real-time Human Pose Estimation using MediaPipe | Sigmoidal, hämtad november 9, 2025, https://sigmoidal.ai/en/real-time-human-pose-estimation-using-mediapipe/
+AI MVP Development: Timeline, Cost & Tech Stack Guide - Zestminds, hämtad november 9, 2025, https://www.zestminds.com/blog/ai-mvp-development-cost-timeline-tech-stack/
+Live Video Processing with displaying without delay : r/mlops - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/mlops/comments/1jiyms7/live_video_processing_with_displaying_without/
+How to generate stunning UI designs with Midjourney AI - LogRocket Blog, hämtad november 9, 2025, https://blog.logrocket.com/ux-design/using-midjourney-generate-ui-designs/
+How To Use Midjourney To Create UI/UX App Design (2025) Tutorial Midjourney - YouTube, hämtad november 9, 2025, https://www.youtube.com/watch?v=gv_B9t2JPbw
+How To Use Midjourney AI in UI Design (Plus Prompt Tips) - UX Design Institute, hämtad november 9, 2025, https://www.uxdesigninstitute.com/blog/midjourney-ai-in-ui-design/
+how i use ai to create 3d illustrations for ui/ux projects (midjourney tutorial inside) - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/womenintech/comments/1fqtf0i/how_i_use_ai_to_create_3d_illustrations_for_uiux/
+Rapid prototyping with V0: A step-by-step guide | Codelevate, hämtad november 9, 2025, https://www.codelevate.com/blog/rapid-prototyping-with-v0-a-step-by-step-guide
+Announcing v0: Generative UI - Vercel, hämtad november 9, 2025, https://vercel.com/blog/announcing-v0-generative-ui
+A step-by-step guide to V0.dev development : r/nextjs - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/nextjs/comments/1jgbvx7/a_stepbystep_guide_to_v0dev_development/
+v0: AI that generates UI for you - YouTube, hämtad november 9, 2025, https://www.youtube.com/watch?v=T92C48SWZ4o
+Rapid Prototyping with Vercel's v0.dev - YouTube, hämtad november 9, 2025, https://www.youtube.com/watch?v=RSQa3rISxMg
+Best AI Prototyping Tools In 2025, Ultimate Review - Banani, hämtad november 9, 2025, https://www.banani.co/blog/best-ai-prototyping-tools
+Claude Code vs Cursor vs Copilot: I Tested All 3 — Here's What You Should Know, hämtad november 9, 2025, https://www.youtube.com/watch?v=x3VQuM26zlM
+Top 10 AI Tools for Developers in 2025 — Boost Your Coding Speed - Medium, hämtad november 9, 2025, https://medium.com/@amareswer/top-10-ai-tools-for-developers-in-2025-boost-your-coding-speed-bf9cf4d33b15
+Github Copilot @workspace — New Development Experience | by Yaroslav Dobroskok, hämtad november 9, 2025, https://medium.com/@yar.dobroskok/github-copilot-workspace-new-development-experience-d69857fbd067
+Why AI Agents Still Need You: Findings from Developer-Agent Collaborations in the Wild, hämtad november 9, 2025, https://arxiv.org/html/2506.12347v3
+How Developers Use AI Agents: When They Work, When They Don't, and Why - arXiv, hämtad november 9, 2025, https://arxiv.org/html/2506.12347v1
+ONNX Runtime Mobile vs. MediaPipe: Your 2025 Guide to Building AI-Powered Mobile Apps | by praveen sharma | Medium, hämtad november 9, 2025, https://medium.com/@sharmapraveen91/onnx-runtime-mobile-vs-mediapipe-your-2025-guide-to-building-ai-powered-mobile-apps-7c49a222b879
+YOLOv7 Pose vs MediaPipe in Human Pose Estimation - LearnOpenCV, hämtad november 9, 2025, https://learnopencv.com/yolov7-pose-vs-mediapipe-in-human-pose-estimation/
+Mediapipe vs. OpenPose: Essential Guide to Pose Estimation - DhiWise, hämtad november 9, 2025, https://www.dhiwise.com/post/mediapipe-vs-openpose-a-practical-guide-to-pose-analysis
+Best Pose Estimation Models & How to Deploy Them, hämtad november 9, 2025, https://blog.roboflow.com/best-pose-estimation-models/
+MediaPipe Vs YOLOv7 - QuickPose.ai, hämtad november 9, 2025, https://quickpose.ai/faqs/mediapipe-vs-yolov7/
+Comparing MediaPipe (CVZone) and YOLOPose for Real Time Pose Classification - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/computervision/comments/1lu60h5/comparing_mediapipe_cvzone_and_yolopose_for_real/
+On-device, Real-time Body Pose Tracking with MediaPipe BlazePose - Google Research, hämtad november 9, 2025, https://research.google/blog/on-device-real-time-body-pose-tracking-with-mediapipe-blazepose/
+Complete OpenPose guide [Updated Mar 2024] - Ikomia, hämtad november 9, 2025, https://www.ikomia.ai/blog/complete-openpose-guide
+How MediaPipe Improves Human Pose Estimation with Optimization Techniques - Saiwa, hämtad november 9, 2025, https://saiwa.ai/blog/mediapipe-pose-estimation/
+Real-Time Pose Tracking with MediaPipe: A Comprehensive Guide for Fitness Applications: Series 2 | by Navdeep Sidana | Medium, hämtad november 9, 2025, https://medium.com/@nsidana123/real-time-pose-tracking-with-mediapipe-a-comprehensive-guide-for-fitness-applications-series-2-731b1b0b8f4d
+Best Human Pose Estimation Models for Mobile App Developers in 2024 - Medium, hämtad november 9, 2025, https://medium.com/@fabrice_77308/best-human-pose-estimation-models-for-mobile-app-developers-in-2024-d853e0d9ebc7
+Pose Estimation and Virtual Gym Assistant Using MediaPipe and Machine Learning, hämtad november 9, 2025, https://www.researchgate.net/publication/374786376_Pose_Estimation_and_Virtual_Gym_Assistant_Using_MediaPipe_and_Machine_Learning
+Mediapipe (via CVZone) vs. Ultralytics YOLOPose for Real Time Pose Classification: More Landmarks = Better Inference : r/learnmachinelearning - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/learnmachinelearning/comments/1lf2aov/mediapipe_via_cvzone_vs_ultralytics_yolopose_for/
+What is OpenPose? The foundations of pose estimation | Ultralytics, hämtad november 9, 2025, https://www.ultralytics.com/blog/what-is-openpose-exploring-a-milestone-in-pose-estimation
+A comprehensive analysis of the machine learning pose estimation models used in human movement and posture analyses: A narrative review - NIH, hämtad november 9, 2025, https://pmc.ncbi.nlm.nih.gov/articles/PMC11566680/
+Real-Time Pose Estimation in Computer Vision - Viso Suite, hämtad november 9, 2025, https://viso.ai/deep-learning/pose-estimation-ultimate-overview/
+OpenPose: Real-time multi-person keypoint detection library for body, face, hands, and foot estimation - GitHub, hämtad november 9, 2025, https://github.com/CMU-Perceptual-Computing-Lab/openpose
+MediaPipe Vs OpenPose - QuickPose.ai, hämtad november 9, 2025, https://quickpose.ai/faqs/mediapipe-vs-openpose/
+OpenPose vs MediaPipe: Comprehensive Comparison & Analysis - Saiwa, hämtad november 9, 2025, https://saiwa.ai/blog/openpose-vs-mediapipe/
+Maximizing the OpenPose Speed - GitHub Pages, hämtad november 9, 2025, https://cmu-perceptual-computing-lab.github.io/openpose/web/html/doc/md_doc_06_maximizing_openpose_speed.html
+Guide to OpenPose: Real-Time Multi-Person Detection - Viso Suite, hämtad november 9, 2025, https://viso.ai/deep-learning/openpose/
+openpose · GitHub Topics, hämtad november 9, 2025, https://github.com/topics/openpose
+OpenPose vs. MediaPipe | In-Depth Comparison for Human Pose Estimation - Medium, hämtad november 9, 2025, https://medium.com/@saiwadotai/openpose-vs-mediapipe-in-depth-comparison-for-human-pose-estimation-402c5a07b022
+YoloV8 Pose Estimation Tutorial - Dev-kit, hämtad november 9, 2025, https://dev-kit.io/blog/machine-learning/yolov8-pose-estimation
+[2204.06806] YOLO-Pose: Enhancing YOLO for Multi Person Pose Estimation Using Object Keypoint Similarity Loss - arXiv, hämtad november 9, 2025, https://arxiv.org/abs/2204.06806
+Multi-Object Tracking with Ultralytics YOLO, hämtad november 9, 2025, https://docs.ultralytics.com/modes/track/
+HP-YOLO: A Lightweight Real-Time Human Pose Estimation Method - MDPI, hämtad november 9, 2025, https://www.mdpi.com/2076-3417/15/6/3025
+Build an AI/ML Football Analysis system with YOLO, OpenCV, and Python - YouTube, hämtad november 9, 2025, https://www.youtube.com/watch?v=neBZ6huolkg
+Pose Estimation - Ultralytics YOLO Docs, hämtad november 9, 2025, https://docs.ultralytics.com/tasks/pose/
+React Native or Flutter? Which one makes sense in the long run if the app grows? Also, is it wise to connect everything to Firebase? : r/FlutterDev - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/FlutterDev/comments/1nxxpy1/react_native_or_flutter_which_one_makes_sense_in/
+How to Use YOLO11 for Pose Estimation - SO Development, hämtad november 9, 2025, https://so-development.org/how-to-use-yolo11-for-pose-estimation/
+FastAPI Setup Guide 2025 – Complete Developer Handbook | Zestminds, hämtad november 9, 2025, https://www.zestminds.com/blog/fastapi-requirements-setup-guide-2025/
+Python in the Backend in 2025: Leveraging Asyncio and FastAPI for High-Performance Systems - Nucamp Coding Bootcamp, hämtad november 9, 2025, https://www.nucamp.co/blog/coding-bootcamp-backend-with-python-2025-python-in-the-backend-in-2025-leveraging-asyncio-and-fastapi-for-highperformance-systems
+FastAPI, hämtad november 9, 2025, https://fastapi.tiangolo.com/
+A Close Look at a FastAPI Example Application - Real Python, hämtad november 9, 2025, https://realpython.com/fastapi-python-web-apis/
+Step on Step guide to deploy YOLO model using FastAPI | by Daniel García - Medium, hämtad november 9, 2025, https://medium.com/latinxinai/step-on-step-guide-to-deploy-yolo-model-using-fastapi-1a764dbd270d
+Dependencies - FastAPI, hämtad november 9, 2025, https://fastapi.tiangolo.com/tutorial/dependencies/
+Advanced Dependencies - FastAPI, hämtad november 9, 2025, https://fastapi.tiangolo.com/advanced/advanced-dependencies/
+Setup FastAPI And Doc (OpenAPI) - Clean Architecture - YouTube, hämtad november 9, 2025, https://www.youtube.com/watch?v=ZMD8V_Q276I
+Flutter vs React Native in 2025: Which One to Choose? | by Gautier | Apparence.io - Medium, hämtad november 9, 2025, https://medium.com/apparence/flutter-vs-react-native-in-2025-which-one-to-choose-fdf34e50f342
+Ultimate Mobile Development Tech Stack for 2025 - DEV Community, hämtad november 9, 2025, https://dev.to/abubakersiddique761/ultimate-mobile-development-tech-stack-for-2025-1mi8
+Flutter Vs React Native (2025): A Detailed Comparison - Digital Humanity, hämtad november 9, 2025, https://digitalhumanity.co.za/resources/flutter-vs-react-native-which-wins-for-performance-roi/
+Flutter vs React Native: Complete 2025 Framework Comparison Guide | Blog, hämtad november 9, 2025, https://www.thedroidsonroids.com/blog/flutter-vs-react-native-comparison
+Flutter vs React Native in 2025 : r/FlutterDev - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/FlutterDev/comments/1kb4msn/flutter_vs_react_native_in_2025/
+Flutter vs React Native in 2025 | Choose the Best Framework for Your App - WEZOM, hämtad november 9, 2025, https://wezom.com/blog/flutter-vs-react-native-in-2025-which-is-better-for-your-mobile-app
+How to Choose the Best Tech Stack for Mobile App Development in 2025, hämtad november 9, 2025, https://multisyn.tech/best-tech-stack-for-mobile-app-development-in-2025
+Pose landmark detection guide | Google AI Edge, hämtad november 9, 2025, https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker
+Top coding agents in 2025: Tools that actually help you build - Logto blog, hämtad november 9, 2025, https://blog.logto.io/top-coding-agent
+Choosing Between FastAPI (Python) vs Express.js (TS) for AI-based Non-Gaming Expo/React Native App : r/reactnative - Reddit, hämtad november 9, 2025, https://www.reddit.com/r/reactnative/comments/1lqr08t/choosing_between_fastapi_python_vs_expressjs_ts/
