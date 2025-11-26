@@ -56,8 +56,8 @@ class _MyAppState extends State<MyApp> {
         return MaterialApp(
           title: 'Project Apollo',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.darkTheme.copyWith(
-            colorScheme: AppTheme.darkTheme.colorScheme.copyWith(
+          theme: AppTheme.getThemeForClub(null).copyWith(
+            colorScheme: AppTheme.getThemeForClub(null).colorScheme.copyWith(
               primary: themeColor,
               secondary: themeColor,
             ),

@@ -1,19 +1,7 @@
 import 'package:flutter/material.dart';
 import 'economy_repository.dart';
 
-class UserStats {
-  final int xp;
-  final int streakDays;
-  final int level;
-  final int totalDrillsCompleted;
-
-  const UserStats({
-    required this.xp,
-    required this.streakDays,
-    required this.level,
-    this.totalDrillsCompleted = 0,
-  });
-}
+import '../models/user_stats.dart';
 
 class UserStatsRepository extends ChangeNotifier {
   static final UserStatsRepository _instance = UserStatsRepository._internal();

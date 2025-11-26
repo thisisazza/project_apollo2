@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../repositories/career_repository.dart';
 import '../repositories/user_stats_repository.dart';
+import '../models/user_stats.dart';
 
 class CareerScreen extends StatelessWidget {
   const CareerScreen({super.key});

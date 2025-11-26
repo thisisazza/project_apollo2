@@ -78,42 +78,46 @@ class _AiCoachPlayerState extends State<AiCoachPlayer> {
 
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.neonGreen.withOpacity(0.5),
+          color: AppColors.neonGreen.withOpacity(0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
             color: AppColors.neonGreen.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 2,
+            blurRadius: 8,
+            spreadRadius: 1,
           ),
         ],
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // The Video
-          Chewie(controller: _chewieController!),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // The Video
+            Chewie(controller: _chewieController!),
 
-          // "Hologram" Scanlines Overlay
-          IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    AppColors.neonGreen.withOpacity(0.05),
-                    Colors.transparent,
-                  ],
-                  stops: const [0.0, 0.5, 1.0],
+            // Subtle "Hologram" Scanlines Overlay
+            IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      AppColors.neonGreen.withOpacity(0.03),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.5, 1.0],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

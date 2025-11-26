@@ -9,9 +9,9 @@ class ClubSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Mock data for clubs
     final clubs = [
-      Club(name: 'Iron Titans', primaryColor: Colors.red, id: '1'),
-      Club(name: 'Cyber Athletics', primaryColor: Colors.cyan, id: '2'),
-      Club(name: 'Neon Runners', primaryColor: Colors.purple, id: '3'),
+      Club(name: 'Iron Titans', primaryColor: Colors.red, secondaryColor: Colors.black, assetPath: 'assets/clubs/iron_titans.png', id: '1'),
+      Club(name: 'Cyber Athletics', primaryColor: Colors.cyan, secondaryColor: Colors.blueAccent, assetPath: 'assets/clubs/cyber_athletics.png', id: '2'),
+      Club(name: 'Neon Runners', primaryColor: Colors.purple, secondaryColor: Colors.pinkAccent, assetPath: 'assets/clubs/neon_runners.png', id: '3'),
     ];
 
     return Scaffold(

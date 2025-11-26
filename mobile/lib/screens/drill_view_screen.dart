@@ -1,14 +1,15 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+// import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart'; // Disabled for Web
 import 'package:permission_handler/permission_handler.dart';
 import '../theme/app_colors.dart';
-// Assuming these exist based on usage, if not we might need to create dummies or fix later
 import '../models/drill.dart'; 
 import '../repositories/drill_repository.dart';
 import '../widgets/ai_coach_player.dart'; 
 import '../utils/camera_utils.dart';
+import '../managers/casting_manager.dart';
 
 class DrillViewScreen extends StatefulWidget {
   const DrillViewScreen({super.key});
@@ -22,16 +23,16 @@ class _DrillViewScreenState extends State<DrillViewScreen> {
 
   // Camera & ML Kit
   CameraController? _cameraController;
-  PoseDetector? _poseDetector;
+  // PoseDetector? _poseDetector; // Disabled
   bool _isCameraInitialized = false;
   bool _isDetecting = false;
-  List<Pose> _poses = [];
+  // List<Pose> _poses = []; // Disabled
   List<CameraDescription> _cameras = [];
-  int _cameraIndex = 1; // Default to front camera (1 usually)
+  int _cameraIndex = 1; 
 
   // Frame skipping
   int _frameCounter = 0;
-  static const int _skipFrames = 2; // Process every 3rd frame
+  static const int _skipFrames = 2; 
 
   @override
   void initState() {
@@ -53,102 +54,128 @@ class _DrillViewScreenState extends State<DrillViewScreen> {
 
       _cameraController = CameraController(
         _cameras[_cameraIndex],
-        ResolutionPreset
-            .medium, // Medium is usually sufficient for Pose Detection and faster
+        ResolutionPreset.medium,
         enableAudio: false,
-        imageFormatGroup: Platform.isAndroid
-            ? ImageFormatGroup.nv21
-            : ImageFormatGroup.bgra8888,
+        // imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888, // Platform check fails on web
       );
 
       await _cameraController?.initialize();
 
       // Initialize Pose Detector
-      final options = PoseDetectorOptions(mode: PoseDetectionMode.stream);
-      _poseDetector = PoseDetector(options: options);
+      // final options = PoseDetectorOptions(mode: PoseDetectionMode.stream);
+      // _poseDetector = PoseDetector(options: options);
 
       if (!mounted) return;
       setState(() {
         _isCameraInitialized = true;
       });
 
-      _startImageStream();
+      // _startImageStream(); // Disabled for Web/Stub
     } catch (e) {
       debugPrint('Error initializing camera: $e');
     }
   }
 
   void _startImageStream() {
-    if (_cameraController == null) return;
-
-    _cameraController?.startImageStream((CameraImage image) async {
-      if (_isDetecting) return;
-
-      _frameCounter++;
-      if (_frameCounter % (_skipFrames + 1) != 0) return;
-
-      _isDetecting = true;
-
-      try {
-        final inputImage = CameraUtils.inputImageFromCameraImage(
-          image: image,
-          controller: _cameraController!,
-  @override
+    // Disabled
+  }
   void dispose() {
     _cameraController?.stopImageStream();
     _cameraController?.dispose();
-    _poseDetector?.close();
+    // _poseDetector?.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 1. Camera Feed
+          // 1. Camera Feed (Full Screen)
           if (_isCameraInitialized && _cameraController != null)
-            SizedBox.expand(child: CameraPreview(_cameraController!))
+            SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _cameraController!.value.previewSize!.height,
+                  height: _cameraController!.value.previewSize!.width,
+                  child: CameraPreview(_cameraController!),
+                ),
+              ),
+            )
           else
             Container(
-              color: Colors.grey[900],
+              color: Colors.black,
               child: const Center(
                 child: CircularProgressIndicator(color: AppColors.neonGreen),
               ),
             ),
 
-          // 2. AI Coach Overlay (Top Center)
-          Positioned(
-            top: 100,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SizedBox(
-                width: 200,
-                height: 300,
-                child: AiCoachPlayer(videoUrl: _currentDrill.videoUrl),
-              ),
-            ),
-              ),
-              child: Container(),
-            ),
-
-          // 4. HUD Overlay
+          // 2. Minimalist HUD (Top)
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Back Button (Glassmorphism)
+                  _buildGlassIconButton(
+                    icon: Icons.arrow_back,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  
+                  // Drill Title
+                  _buildGlassBadge(_currentDrill.name),
+
+                  // Settings/Cast Button
+                  _buildGlassIconButton(
+                    icon: Icons.cast,
+                    onPressed: () {
+                      _showCastingModal(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
 
-          // Back Button
+          // 3. AI Coach (Draggable/Floating PIP)
           Positioned(
-            top: 48,
+            top: 100,
+            right: 16,
+            child: SizedBox(
+              width: 120,
+              height: 180,
+              child: AiCoachPlayer(videoUrl: _currentDrill.videoUrl),
+            ),
+          ),
+
+          // 4. Interactive Feedback / Stats (Bottom)
+          Positioned(
+            bottom: 32,
             left: 16,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.textWhite),
-              onPressed: () => Navigator.pop(context),
+            right: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildGlassBadge("BALL DETECTED", color: AppColors.neonGreen),
+                const SizedBox(height: 8),
+                Text(
+                  "KEEP IT UP!",
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10.0,
+                        color: AppColors.neonGreen,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -156,12 +183,27 @@ class _DrillViewScreenState extends State<DrillViewScreen> {
     );
   }
 
-  Widget _buildHudBadge(String text, {Color color = AppColors.alertRed}) {
+  Widget _buildGlassIconButton({required IconData icon, required VoidCallback onPressed}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: color),
-        color: color.withOpacity(0.1),
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  Widget _buildGlassBadge(String text, {Color color = Colors.white}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         text,
@@ -170,6 +212,81 @@ class _DrillViewScreenState extends State<DrillViewScreen> {
           fontFamily: 'Teko',
           fontWeight: FontWeight.bold,
           fontSize: 16,
+        ),
+      ),
+    );
+  }
+
+  void _showCastingModal(BuildContext context) {
+    final castingManager = CastingManager(); // In a real app, provide this instance
+    castingManager.startScanning();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "CAST TO DEVICE",
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: AppColors.neonGreen,
+                fontFamily: 'Teko',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AnimatedBuilder(
+              animation: castingManager,
+              builder: (context, _) {
+                if (castingManager.isScanning) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CircularProgressIndicator(color: AppColors.neonGreen),
+                    ),
+                  );
+                }
+
+                if (castingManager.devices.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "No devices found.",
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: castingManager.devices.length,
+                  itemBuilder: (context, index) {
+                    final device = castingManager.devices[index];
+                    return ListTile(
+                      leading: const Icon(Icons.tv, color: Colors.white),
+                      title: Text(device, style: const TextStyle(color: Colors.white)),
+                      onTap: () {
+                        castingManager.connectToDevice(device);
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Connected to $device')),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
