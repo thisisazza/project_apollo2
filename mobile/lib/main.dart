@@ -11,6 +11,7 @@ import 'screens/workout_logger_screen.dart';
 import 'screens/drill_view_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/club_selection_screen.dart';
+import 'screens/camera_screen.dart';
 
 import 'repositories/customization_repository.dart';
 
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
             '/workout_logger': (context) => const WorkoutLoggerScreen(),
             '/drill_view': (context) => const DrillViewScreen(),
             '/club_selection': (context) => const ClubSelectionScreen(),
+            '/camera': (context) => const CameraScreen(),
           },
         );
       },

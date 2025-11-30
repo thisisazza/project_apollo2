@@ -6,6 +6,12 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Mobile</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera access to track your drills.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need microphone access for voice commands.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need location access to show local pitches.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
