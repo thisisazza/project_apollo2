@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/club.dart';
 import '../theme/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ClubRepository {
   static const List<Club> clubs = [
@@ -26,6 +27,20 @@ class ClubRepository {
       assetPath: 'assets/clubs/plasma_fc.png',
     ),
   ];
+
+  static Future<void> saveSelectedClub(String clubId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_club_id', clubId);
+  }
+
+  static Future<Club> getSelectedClub() async {
+    final prefs = await SharedPreferences.getInstance();
+    final clubId = prefs.getString('selected_club_id');
+    if (clubId != null) {
+      return getClubById(clubId);
+    }
+    return clubs.first;
+  }
 
   static Club getClubById(String id) {
     return clubs.firstWhere((club) => club.id == id, orElse: () => clubs.first);

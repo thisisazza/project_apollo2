@@ -1,0 +1,49 @@
+{
+  "drill": {
+    "id": "drill_003",
+    "title": "Reaction Sprint",
+    "description": "Advanced drill testing reaction time and acceleration.",
+    "difficulty": "advanced",
+    "category": "reaction",
+    "duration_seconds": 30,
+    "author": "Coach Klopp AI",
+    "steps": [
+      {
+        "step_id": 1,
+        "instruction": "Stand in the center (Zone 7).",
+        "voice_command": "Center!",
+        "action_type": "wait",
+        "target_zone": 7,
+        "timeout_seconds": 5.0,
+        "next_step_delay": 0.0
+      },
+      {
+        "step_id": 2,
+        "instruction": "Sprint to Zone 1!",
+        "voice_command": "Zone 1!",
+        "action_type": "move",
+        "target_zone": 1,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 3,
+        "instruction": "Back to Center.",
+        "voice_command": "Center!",
+        "action_type": "move",
+        "target_zone": 7,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 4,
+        "instruction": "Sprint to Zone 13!",
+        "voice_command": "Zone 13!",
+        "action_type": "move",
+        "target_zone": 13,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 0.0
+      }
+    ]
+  }
+}

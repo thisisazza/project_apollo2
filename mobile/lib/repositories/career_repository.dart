@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'user_stats_repository.dart';
+import '../models/contract.dart';
 
 class CareerRank {
   final String id;
@@ -151,5 +152,76 @@ class CareerRepository {
 
     // Simple logic: if current rank index >= required rank index
     return ranks.indexOf(currentRank) >= ranks.indexOf(requiredRank);
+  }
+  // ... existing code ...
+
+  // Contract Management
+  Contract? _currentContract;
+  Contract? get currentContract => _currentContract;
+
+  void signContract(Contract contract) {
+    _currentContract = contract;
+    // In a real app, persist this
+  }
+
+  List<Contract> generateContractOffers() {
+    final ovr = UserStatsRepository().stats.overallRating;
+
+    return [
+      Contract(
+        id: 'offer_1',
+        clubName: 'Neon City FC',
+        weeklyWage: ovr * 10,
+        goalBonus: ovr * 2,
+        durationWeeks: 10,
+        weeksRemaining: 10,
+        difficulty: 'Rookie',
+      ),
+      Contract(
+        id: 'offer_2',
+        clubName: 'Cyber United',
+        weeklyWage: (ovr * 12).toInt(),
+        goalBonus: (ovr * 2.5).toInt(),
+        durationWeeks: 20,
+        weeksRemaining: 20,
+        difficulty: 'Pro',
+      ),
+    ];
+  }
+
+  // Match Simulation
+  Map<String, dynamic> simulateMatch() {
+    if (_currentContract == null) {
+      return {'played': false, 'reason': 'No Contract'};
+    }
+
+    final stats = UserStatsRepository().stats;
+    final random = DateTime.now().millisecondsSinceEpoch % 100;
+
+    // Simple simulation logic based on OVR
+    int performanceScore =
+        stats.overallRating + (random % 20 - 10); // OVR +/- 10
+    bool won = performanceScore > 60; // Arbitrary threshold
+    int goals = won ? (performanceScore / 20).floor() : 0;
+    int wageEarned = _currentContract!.weeklyWage;
+    int bonusEarned = goals * _currentContract!.goalBonus;
+
+    // Decrement contract
+    _currentContract = _currentContract!.copyWith(
+      weeksRemaining: _currentContract!.weeksRemaining - 1,
+    );
+    if (_currentContract!.weeksRemaining <= 0) {
+      _currentContract = null; // Contract expired
+    }
+
+    return {
+      'played': true,
+      'won': won,
+      'score': performanceScore,
+      'goals': goals,
+      'wage': wageEarned,
+      'bonus': bonusEarned,
+      'opponent': 'Rival FC', // Mock
+    };
   }
 }

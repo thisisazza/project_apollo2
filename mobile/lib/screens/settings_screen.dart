@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../repositories/settings_repository.dart';
+import '../services/feature_flag_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -51,6 +52,10 @@ class SettingsScreen extends StatelessWidget {
               _buildSectionHeader(context, 'DEVICE'),
               _buildInfoTile(context, 'VERSION', '1.0.0 (Alpha)', Icons.info),
               _buildInfoTile(context, 'BUILD', '2025.11.23', Icons.build),
+
+              const SizedBox(height: 32),
+              _buildSectionHeader(context, 'EXPERIMENTAL (VIBECODING)'),
+              _buildFeatureFlagSwitches(context),
             ],
           );
         },
@@ -146,6 +151,67 @@ class SettingsScreen extends StatelessWidget {
           Text(value, style: const TextStyle(color: AppColors.textGrey)),
         ],
       ),
+    );
+  }
+
+  Widget _buildFeatureFlagSwitches(BuildContext context) {
+    final flags = FeatureFlagService();
+    return AnimatedBuilder(
+      animation: flags,
+      builder: (context, child) {
+        return Column(
+          children: [
+            _buildSwitchTile(
+              context,
+              'RIVALRY MODE',
+              'Async PvP against ghosts',
+              flags.rivalryMode,
+              (val) => flags.toggleFeature('rivalryMode', val),
+              Icons.people_outline,
+            ),
+            _buildSwitchTile(
+              context,
+              'GHOST OVERLAY',
+              'Pro player skeleton guide',
+              flags.ghostOverlay,
+              (val) => flags.toggleFeature('ghostOverlay', val),
+              Icons.accessibility_new,
+            ),
+            _buildSwitchTile(
+              context,
+              'AI AUDIO COACH',
+              'Real-time TTS feedback',
+              flags.aiAudioCoach,
+              (val) => flags.toggleFeature('aiAudioCoach', val),
+              Icons.record_voice_over,
+            ),
+            _buildSwitchTile(
+              context,
+              'CLUB IDENTITY',
+              'Theming and leaderboards',
+              flags.clubIdentity,
+              (val) => flags.toggleFeature('clubIdentity', val),
+              Icons.shield,
+            ),
+            _buildSwitchTile(
+              context,
+              'SMART PROGRESSION',
+              'Skill tree and unlocks',
+              flags.smartProgression,
+              (val) => flags.toggleFeature('smartProgression', val),
+              Icons.trending_up,
+            ),
+            _buildSwitchTile(
+              context,
+              'ITEM SHOP',
+              'Skins and effects',
+              flags.shopEnabled,
+              (val) => flags.toggleFeature('shopEnabled', val),
+              Icons.shopping_bag,
+            ),
+          ],
+        );
+      },
     );
   }
 }

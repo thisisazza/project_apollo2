@@ -1,0 +1,49 @@
+{
+  "drill": {
+    "id": "drill_002",
+    "title": "Box Control",
+    "description": "Beginner dribbling drill to master close control within a confined space.",
+    "difficulty": "beginner",
+    "category": "dribbling",
+    "duration_seconds": 45,
+    "author": "Coach Pep AI",
+    "steps": [
+      {
+        "step_id": 1,
+        "instruction": "Start in Zone 7.",
+        "voice_command": "Go to Zone 7.",
+        "action_type": "move",
+        "target_zone": 7,
+        "timeout_seconds": 5.0,
+        "next_step_delay": 1.0
+      },
+      {
+        "step_id": 2,
+        "instruction": "Dribble in a circle inside Zone 7.",
+        "voice_command": "Circle dribble!",
+        "action_type": "dribble",
+        "target_zone": 7,
+        "timeout_seconds": 10.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 3,
+        "instruction": "Stop the ball dead.",
+        "voice_command": "Stop!",
+        "action_type": "wait",
+        "target_zone": 7,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 4,
+        "instruction": "Dribble to Zone 8.",
+        "voice_command": "Move to 8.",
+        "action_type": "dribble",
+        "target_zone": 8,
+        "timeout_seconds": 3.0,
+        "next_step_delay": 0.0
+      }
+    ]
+  }
+}

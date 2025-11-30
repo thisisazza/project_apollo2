@@ -1,0 +1,22 @@
+{
+  "drill": {
+    "id": "string",
+    "title": "string",
+    "description": "string",
+    "difficulty": "beginner | intermediate | advanced | pro",
+    "category": "passing | dribbling | shooting | fitness | reaction",
+    "duration_seconds": "integer",
+    "author": "AI Coach Name",
+    "steps": [
+      {
+        "step_id": "integer",
+        "instruction": "string",
+        "voice_command": "string",
+        "action_type": "move | pass | shoot | dribble | wait",
+        "target_zone": "integer (1-13 or 0 for none)",
+        "timeout_seconds": "float",
+        "next_step_delay": "float"
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "drill": {
+    "id": "drill_001",
+    "title": "The Triangle Trap",
+    "description": "High-intensity passing drill focusing on quick touches and movement between zones 1, 2, and 5.",
+    "difficulty": "intermediate",
+    "category": "passing",
+    "duration_seconds": 60,
+    "author": "Coach Pep AI",
+    "steps": [
+      {
+        "step_id": 1,
+        "instruction": "Start in Zone 5 with the ball.",
+        "voice_command": "Start in Zone 5.",
+        "action_type": "move",
+        "target_zone": 5,
+        "timeout_seconds": 5.0,
+        "next_step_delay": 1.0
+      },
+      {
+        "step_id": 2,
+        "instruction": "Pass to Zone 1.",
+        "voice_command": "Pass to 1!",
+        "action_type": "pass",
+        "target_zone": 1,
+        "timeout_seconds": 3.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 3,
+        "instruction": "Sprint to Zone 2.",
+        "voice_command": "Sprint to 2!",
+        "action_type": "move",
+        "target_zone": 2,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 0.5
+      },
+      {
+        "step_id": 4,
+        "instruction": "Receive pass in Zone 2.",
+        "voice_command": "Receive!",
+        "action_type": "wait",
+        "target_zone": 2,
+        "timeout_seconds": 2.0,
+        "next_step_delay": 1.0
+      },
+      {
+        "step_id": 5,
+        "instruction": "Dribble back to Zone 5.",
+        "voice_command": "Dribble to 5.",
+        "action_type": "dribble",
+        "target_zone": 5,
+        "timeout_seconds": 4.0,
+        "next_step_delay": 0.0
+      }
+    ]
+  }
+}

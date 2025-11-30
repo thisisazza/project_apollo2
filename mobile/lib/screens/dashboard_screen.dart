@@ -5,12 +5,10 @@ import '../repositories/user_stats_repository.dart';
 import '../repositories/economy_repository.dart';
 import '../repositories/customization_repository.dart';
 import 'workout_logger_screen.dart';
-import 'drill_view_screen.dart';
-import 'shop_screen.dart';
+import 'drill_selection_screen.dart';
 import 'settings_screen.dart';
 import 'career_screen.dart';
-import 'locker_room_screen.dart';
-import 'analytics_screen.dart';
+import 'performance_lab_screen.dart';
 import '../widgets/cyber_button.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -84,7 +82,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const DrillViewScreen(),
+                              builder: (context) =>
+                                  const DrillSelectionScreen(),
                             ),
                           );
                         },
@@ -191,51 +190,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                 const SizedBox(height: 24),
 
-                // 5. Locker Room Access
+                // 5. Cyber Market Access (Unified)
                 Hero(
-                  tag: 'locker_room_button',
+                  tag: 'cyber_market_button',
                   child: CyberButton(
-                    text: 'ENTER LOCKER ROOM',
+                    text: 'ENTER CYBER MARKET',
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LockerRoomScreen(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/cyber_market');
                     },
                     backgroundColor: AppColors.surfaceLight,
-                    foregroundColor: AppColors.textWhite,
+                    foregroundColor: AppColors.neonBlue,
                     borderColor: AppColors.neonBlue,
                   ),
                 ).animate().fadeIn(delay: 600.ms),
-                const SizedBox(height: 16),
-
-                // 6. Shop Access (Economy)
-                CyberButton(
-                  text: 'OPEN CYBER SHOP',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ShopScreen(),
-                      ),
-                    );
-                  },
-                  backgroundColor: AppColors.neonPink,
-                  foregroundColor: AppColors.textWhite,
-                ).animate().fadeIn(delay: 700.ms),
 
                 const SizedBox(height: 16),
 
                 // 7. Analytics Access
                 CyberButton(
-                  text: 'VIEW PERFORMANCE DNA',
+                  text: 'ENTER PERFORMANCE LAB',
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AnalyticsScreen(),
+                        builder: (context) => const PerformanceLabScreen(),
                       ),
                     );
                   },
@@ -292,16 +270,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       title: Row(
         children: [
           // Profile Image (Customizable)
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: customizationRepo.currentThemeColor.withOpacity(
-              0.2,
-            ),
-            child: Icon(
-              customizationRepo.currentKitIcon,
-              color: customizationRepo.currentThemeColor,
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: customizationRepo.currentThemeColor.withOpacity(
+                0.2,
+              ),
+              child: Icon(
+                customizationRepo.currentKitIcon,
+                color: customizationRepo.currentThemeColor,
+              ),
             ),
           ),
+
           const SizedBox(width: 12),
 
           // Greeting

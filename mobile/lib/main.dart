@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'theme/app_theme.dart';
-import 'theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'theme/app_theme.dart';
-import 'theme/app_colors.dart';
 import 'models/club.dart';
-import 'screens/workout_logger_screen.dart';
-import 'screens/drill_view_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/club_selection_screen.dart';
-import 'screens/camera_screen.dart';
-
 import 'repositories/customization_repository.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/workout_logger_screen.dart';
+import 'screens/drill_selection_screen.dart';
+import 'screens/camera_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/cyber_market_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,11 +41,6 @@ class _MyAppState extends State<MyApp> {
     return AnimatedBuilder(
       animation: _customizationRepo,
       builder: (context, child) {
-        // If a club is selected, it overrides the cosmetic theme for primary color
-        // But for this phase, let's let the cosmetic theme take precedence or mix them
-        // Let's use the Cosmetic Theme as the "Accent" and Club as "Primary" if set,
-        // or just use Cosmetic Theme if no club.
-
         final themeColor = _customizationRepo.currentThemeColor;
 
         return MaterialApp(
@@ -62,15 +51,15 @@ class _MyAppState extends State<MyApp> {
               primary: themeColor,
               secondary: themeColor,
             ),
-            // We might need to update other theme properties if AppTheme relies on static colors
           ),
           initialRoute: '/',
           routes: {
             '/': (context) => const DashboardScreen(),
             '/workout_logger': (context) => const WorkoutLoggerScreen(),
-            '/drill_view': (context) => const DrillViewScreen(),
-            '/club_selection': (context) => const ClubSelectionScreen(),
+            '/drill_selection': (context) => const DrillSelectionScreen(),
             '/camera': (context) => const CameraScreen(),
+            '/profile': (context) => const ProfileScreen(),
+            '/cyber_market': (context) => const CyberMarketScreen(),
           },
         );
       },
